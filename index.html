@@ -52,6 +52,14 @@
         .imp {
             border-bottom: 3px #fd6585 solid;
         }
+
+        .content {
+            font-size: 15px;
+            padding: 16px 20px;
+            line-height: 28px;
+            margin: 0;
+            text-align: justify;
+        }
     </style>
 
 
@@ -62,6 +70,15 @@
     <div class="section" id="section4">
 
         <div id='container' style="width:70%;height: 100%;">
+            <div class="rd"
+                 style="border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
+                <p style="padding: 5px 0px 0px;line-height: 0;color:white;text-align: center">重绘网络</p></div>
+            <div class=""
+                 style="border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
+                <p style="padding: 5px 0px 0px;line-height: 0;color:white;text-align: center">动态网络</p></div>
+            <div class=""
+                 style="border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
+                <p style="padding: 5px 0px 0px;line-height: 0;color:white;text-align: center">模拟反恐</p></div>
             <svg id="map"></svg>
             <script>
 
@@ -69,19 +86,19 @@
                 var svg3 = d3.select("svg#map");
 
                 //var url = "http://enjalot.github.io/wwsd/data/world/world-110m.geojson";
-                d3.json('world-110m.geojson', function(err, geojson) {
+                d3.json('world-110m.geojson', function (err, geojson) {
 
-                    svg3.attr('width',200)
-                        .attr('height',150);
+                    svg3.attr('width', 200)
+                        .attr('height', 150);
 
-                    svg3.style('position',"absolute");
+                    svg3.style('position', "absolute");
                     var width3 = +svg3.attr("width"),
                         height3 = +svg3.attr("height");
 
                     var projection = d3.geoMercator()
                         .scale(width3)
                         .scale(30)
-                        .translate([width3/2, height3/1.35 ]);
+                        .translate([width3 / 2, height3 / 1.35]);
 
                     var path = d3.geoPath()
                         .projection(projection);
@@ -90,14 +107,18 @@
                         .attr("d", path(geojson));
 
                     svg3.selectAll("circle")
-                        .data([[-120,45],[30,30]]).enter()
+                        .data([[-120, 45], [30, 30]]).enter()
                         .append("circle")
-                        .attr("class","map")
-                        .attr("cx", function (d) { return projection(d)[0]; })
-                        .attr("cy", function (d) { return projection(d)[1]; })
+                        .attr("class", "map")
+                        .attr("cx", function (d) {
+                            return projection(d)[0];
+                        })
+                        .attr("cy", function (d) {
+                            return projection(d)[1];
+                        })
                         .attr("r", "3px")
                         .attr("fill", '#fd6585')
-                        .attr('fill-opacity',0.8);
+                        .attr('fill-opacity', 0.8);
 
                 });
 
@@ -105,15 +126,13 @@
                 //console.log(projection([120,21]));
 
 
-
-
             </script>
 
             <svg id="count"></svg>
             <script>
-                var svg4 = d3.select("svg#count").style('position','absolute');
-                svg4.attr('width',200)
-                    .attr('height','100%');
+                var svg4 = d3.select("svg#count").style('position', 'absolute');
+                svg4.attr('width', 200)
+                    .attr('height', '100%');
 
 
             </script>
@@ -175,7 +194,7 @@
                                     return d.id;
                                 }))
                                 .force("charge", d3.forceManyBody().strength(-3))
-                                .force("center", d3.forceCenter(width /1.7, height / 2))
+                                .force("center", d3.forceCenter(width / 1.7, height / 2))
                             //.force("collide",d3.forceCollide( function(d){return d.r + 8 }).iterations(3) );;
 
                             link
@@ -364,18 +383,27 @@
 
 
             </script>
-            <p style="font-size:xx-large;padding: 5px;line-height: 28px">
-                <span class="rd">here</span>暗流：恐怖网络的诞生
+            <p style="text-align:center;font-size:xx-large;padding: 5px;line-height: 28px">
+                暗流：恐怖网络的诞生
             </p>
-            <br>
-            <p style="font-size: 14px;line-height: 28px">
+
+            <p class="content" style="text-align: center">
                 第三届数据新闻大赛参赛作品
                 <br>
                 团队 254 成员：刘智<br>
             </p>
-            <p style="font-size: 16px">测试<span class="high" alt="Bahir Eldeen Brigade">点击</span>
+            <p class="content" style="text-align: center;font-size: 18px">
+                阅读提示
+                <br></p>
+            <p class="content">
+                <span class="high" alt="Bahir Eldeen Brigade">红色背景</span>表示可以点击，左图会显示出对应的恐怖组织网络。
+                <br><span class="imp">红色下划线标注的文字是文章的重点。</span>
             </p>
-            <p style="font-size: 15px;padding: 16px 20px;line-height: 28px;margin: 0;text-align:justify;">
+
+
+            <p style="text-align: center;font-size: 18px">正文</p>
+            <p class="content">
+
 
                 世界从未有过彻底的和平。2001年发生在美国的<span class="high" alt="Al-Qaida">911恐怖袭击</span>举世震惊，犹在眼前；而近年来乌鲁木齐七五事件、昆明火车站暴力恐怖袭击等一系列事件，也打破了中国的平静；难民潮涌入欧洲，极端宗教分子攻击无辜人民，也让欧洲大陆疑云密布。
                 <br><br>
@@ -574,19 +602,20 @@
                 <br><br>
 
             </p>
-            <p style="font-size: 15px;">
-                鸣谢
-                <br><br>
+            <p class="content" style="text-align: center">鸣谢</p>
+            <p class="content">
+
                 本网站的布局与颜色样式借鉴了财新·数字说栏目作品<a href="http://datanews.caixin.com/mobile/yimin/" target="_blank">《移民去远方》</a>，在此表示感谢。
-                <br><br>
-                作者信息
-                <br><br>
-                刘智
-                <br><br>
-                台湾交通大学管理科学系硕士
-                <br><br>
-                现于上海交通大学管理科学与工程系交换
-                <br><br>
+            </p>
+
+
+            <p class="content" style="text-align: center">作者</p>
+
+
+            <p class="content">
+                刘智，台湾交通大学管理科学系硕士，现于上海交通大学管理科学与工程系交换。
+                <br>
+                邮箱：rancy.liu@foxmail.com
             </p>
         </div>
     </div>
