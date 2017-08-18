@@ -29,6 +29,21 @@
 
         });
 
+        window.onload = function () {
+            var ctx = document.getElementById("chart1").getContext("2d");
+            window.myLine = new Chart(ctx, config1);
+
+            var ctx2 = document.getElementById("chart2").getContext("2d");
+            window.myLine = new Chart(ctx2, config2);
+
+            var ctx3 = document.getElementById("chart3").getContext("2d");
+            window.myLine = new Chart(ctx3, config3);
+
+            var ctx4 = document.getElementById("chart4").getContext("2d");
+            window.myLine = new Chart(ctx4, config4);
+
+        };
+
     </script>
     <style>
 
@@ -82,45 +97,66 @@
             <svg id="map"></svg>
             <script>
 
+                function mapData(orgName) {
+                    d3.json('attackLocations.json',function (err,map) {
+                        var mapdata=map.locations;
+                        //console.log(mapdata);
+                        var data= mapdata.filter(function (t) {return t.name===orgName;});
+                        //console.log(data[0].locations);
+                        var mapNode=svg3.selectAll("circle")
+                            .data(data[0].locations)
+                            .enter()
+                            .append("circle");
+                        mapNode
+                            .attr("class", "map")
+                            .attr("cx", function (d) {
+                                //console.log(d);
+                                return projection([d[1],d[0]])[0];
+                            })
+                            .attr("cy", function (d) {
+                                return projection([d[1],d[0]])[1];
+                            })
+                            .attr("r", "2px")
+                            .attr("fill", '#fd6585')
+                            .attr('fill-opacity', 0.8);
+
+                        mapNode.exit().remove();
+                    });
+                }
 
                 var svg3 = d3.select("svg#map");
 
+
+                svg3.attr('width', 200)
+                    .attr('height', 150);
+
+                svg3.style('position', "absolute");
+                var width3 = +svg3.attr("width"),
+                    height3 = +svg3.attr("height");
+
+                var projection = d3.geoMercator()
+                    .scale(width3)
+                    .scale(30)
+                    .translate([width3 / 2, height3 / 1.35]);
+
+                var path = d3.geoPath()
+                    .projection(projection);
+
                 //var url = "http://enjalot.github.io/wwsd/data/world/world-110m.geojson";
-                d3.json('world-110m.geojson', function (err, geojson) {
+                function mapRestart(orgName) {
+                    d3.json('world-110m.geojson', function (err, geojson) {
 
-                    svg3.attr('width', 200)
-                        .attr('height', 150);
+                        svg3.append("path")
+                            .attr("d", path(geojson));
 
-                    svg3.style('position', "absolute");
-                    var width3 = +svg3.attr("width"),
-                        height3 = +svg3.attr("height");
+                        svg3.selectAll("circle")
+                            .remove();
 
-                    var projection = d3.geoMercator()
-                        .scale(width3)
-                        .scale(30)
-                        .translate([width3 / 2, height3 / 1.35]);
+                        mapData(orgName);
 
-                    var path = d3.geoPath()
-                        .projection(projection);
+                    });
+                }
 
-                    svg3.append("path")
-                        .attr("d", path(geojson));
-
-                    svg3.selectAll("circle")
-                        .data([[-120, 45], [30, 30]]).enter()
-                        .append("circle")
-                        .attr("class", "map")
-                        .attr("cx", function (d) {
-                            return projection(d)[0];
-                        })
-                        .attr("cy", function (d) {
-                            return projection(d)[1];
-                        })
-                        .attr("r", "3px")
-                        .attr("fill", '#fd6585')
-                        .attr('fill-opacity', 0.8);
-
-                });
 
 
                 //console.log(projection([120,21]));
@@ -154,7 +190,7 @@
 
                 function redraw() {
 
-                    d3.json("final2.json", function (error, graph) {
+                    d3.json("nodeslinks.json", function (error, graph) {
                         if (error) throw error;
 
                         var links = graph.links;
@@ -191,24 +227,40 @@
 
                             var simulation = d3.forceSimulation()
                                 .force("link", d3.forceLink().id(function (d) {
-                                    return d.id;
+                                    return d.name;
                                 }))
                                 .force("charge", d3.forceManyBody().strength(-3))
                                 .force("center", d3.forceCenter(width / 1.7, height / 2))
+                                //.force("collide", d3.forceCollide().radius(function(d) { return 10; }).iterations(2))
                             //.force("collide",d3.forceCollide( function(d){return d.r + 8 }).iterations(3) );;
 
                             link
                                 .attr('stroke', '#999')
                                 .attr("stroke-width", function (d) {
-                                    return Math.sqrt(d.value) + 1;
+                                    return Math.sqrt(d['2016']) + 1;
                                 })
                                 .style('stroke-opacity', 0.8);
 
                             node
-                                .attr("r", 5)
+                                .attr("r", function (d) {
+                                    return 5;
+                                    var now=d['2016'];
+                                    if(now>10){
+                                        return 10;
+                                    }
+                                    else{
+                                        if(now<5){
+                                            return 5;
+                                        }
+                                        return now;
+                                    }
+
+                                })
                                 .attr("fill", function (d) {
                                     return color(d.group);
                                 })
+                                .attr('stroke-opacity',0)
+                                .attr('fill-opacity',0.9)
                                 .on("mouseover", fade(.1))
                                 .on("mouseout", fade(1))
                                 //.on("click", function (d) {
@@ -218,6 +270,9 @@
                                 .on("click", function (d, i) {
                                     doubleclick(d, i);
                                 })
+                                .on("click",function (d) {
+                                    mapRestart(d.name)
+                                })
                                 .call(d3.drag()
                                     .on("start", dragstarted)
                                     .on("drag", dragged)
@@ -225,7 +280,7 @@
 
                             node.append("title")
                                 .text(function (d) {
-                                    return d.id;
+                                    return d.name;
                                 });
 
 
@@ -295,7 +350,7 @@
                         function doubleclick(d, i) {
                             svg_1.selectAll('circle')
                                 .filter(function (o) {
-                                    return o.id === d.id;
+                                    return o.name === d.name;
                                 })
                                 .remove();
                             svg_1.selectAll('line')
@@ -321,15 +376,15 @@
                             .style("fill-opacity", function (o) {
                                 //console.log(neighboring(d, o));
                                 //console.log(d.index+','+o.index);
-                                return neighboring(d.id, o.id) ? 1 : opacity;
+                                return neighboring(d.name, o.name) ? 1 : opacity;
                             })
-                            .style("stroke-opacity", function (o) {
+                            //.style("stroke-opacity", function (o) {
                                 //console.log(neighboring(d, o));
                                 //console.log(d.index+','+o.index);
-                                return neighboring(d.id, o.id) ? 1 : opacity;
-                            });
+                                //return neighboring(d.name, o.name) ? 1 : opacity;
+                            //});
                         d3.select(this).style('fill-opacity', 1);
-                        d3.select(this).style('stroke-opacity', 1);
+                        //d3.select(this).style('stroke-opacity', 1);
                         svg_1.selectAll("line").style("opacity", opacity);
 
                         svg_1.selectAll("line").filter(function (j) {
@@ -359,10 +414,10 @@
                     svg_1.selectAll('circle')
                         .filter(function (d) {
                             //console.log(d)
-                            return d.id === org_name;
+                            return d.name === org_name;
                         })
                         .each(function (d, i) {
-                            console.log(d.id);
+                            //console.log(d.name);
                             var now = d3.select(this);
                             var r = now.attr('r');
                             var f = now.attr('fill');
@@ -571,17 +626,135 @@
                         }
                     };
 
-                    window.onload = function () {
-                        var ctx = document.getElementById("chart1").getContext("2d");
-                        window.myLine = new Chart(ctx, config1);
 
-                        var ctx2 = document.getElementById("chart2").getContext("2d");
-                        window.myLine = new Chart(ctx2, config2);
-
-                    };
                 </script>
                 在1998年之前，平均每100起恐怖袭击中，只有不到1起是由恐怖组织联合发动的；1998年之后，恐怖组织则开始选择合作，每100起恐怖袭击中，最多有超过4起是由多个恐怖组织联合发动的。这说明恐怖活动进入了新形态，恐怖组织的合作将提高其袭击范围与强度，同时也加大了将其歼灭的难度。
                 <br><br>
+                <canvas id="chart3" width="400" height="400"></canvas>
+                <script>
+                    //var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    var config3 = {
+                        type: 'line',
+                        data: {
+                            labels: [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],
+                            datasets: [{
+                                label: "独立发动恐袭平均成功率",
+                                backgroundColor: window.chartColors.red,
+                                borderColor: window.chartColors.red,
+                                data: [
+                                    90.10357,88.42842,90.69767,89.48696,92.36984,94.52965,
+                                    96.37736,96.28229,91.55803,93.83033,90.80243,90.6778,
+                                    88.97371,86.73938,88.11653,84.21549,79.98691
+                                ],
+                                fill: false,
+                            }, {
+                                label: "联合发动恐袭平均成功率",
+                                fill: false,
+                                backgroundColor: window.chartColors.blue,
+                                borderColor: window.chartColors.blue,
+                                data: [
+                                    94.44444,100,100,100,100,100,100,100,91.66667,96.9697,
+                                    97.72727,91.66667,87.80488,91.48936,94.3299,95.05703,90.20833
+                                ],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            title:{
+                                display:true,
+                                text:'恐怖袭击平均成功率对比'
+                            },
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false,
+                            },
+                            hover: {
+                                mode: 'nearest',
+                                intersect: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Month'
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
+                            }
+                        }
+                    };
+                </script>
+
+                <canvas id="chart4" width="400" height="400"></canvas>
+                <script>
+                    //var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    var config4 = {
+                        type: 'line',
+                        data: {
+                            labels: [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],
+                            datasets: [{
+                                label: "独立发动恐袭平均死亡人数",
+                                backgroundColor: window.chartColors.red,
+                                borderColor: window.chartColors.red,
+                                data: [
+                                    2.490794,4.120022,3.329457,2.505467,4.949731,3.119121,
+                                    3.520377,4.022999,1.870271,1.950728,1.555835,1.620751,
+                                    1.855083,1.883407,2.673205,2.659295,2.674654
+                                ],
+                                fill: false,
+                            }, {
+                                label: "联合发动恐袭平均死亡人数",
+                                fill: false,
+                                backgroundColor: window.chartColors.blue,
+                                borderColor: window.chartColors.blue,
+                                data: [
+                                    4.055556,3.142857,16.8,5.641509,
+                                    6.181818,6.057143,2.2,3.869565,
+                                    6.4,5,6.840909,6.166667,3.073171,
+                                    5.053191,8.891753,6.794677,4.110417
+                                ],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            title:{
+                                display:true,
+                                text:'恐怖袭击平均死亡人数对比'
+                            },
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false,
+                            },
+                            hover: {
+                                mode: 'nearest',
+                                intersect: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Month'
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
+                            }
+                        }
+                    };
+                </script>
                 为了挖掘恐怖组织的合作结构与合作模式，本文利用Global Terrorism Database
                 (GTD)收集的全球恐怖袭击事件数据库，从中选取由两个及以上恐怖组织共同发动的恐怖袭击事件共1739起，作为基本的研究材料，并据此生成社会网络图(Social Network
                 Graph)。图中的每一个圆点(称之为「节点」)代表一个恐怖组织；恐怖组织之间有合作，则两个点之间产生一条连线，连线越粗，说明两个恐怖组织的合作次数越多，其关系越紧密。
