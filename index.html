@@ -4,12 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>暗流：恐怖网络的诞生</title>
-    <meta name="author" content="Alvaro Trigo Lopez"/>
-    <meta name="description" content="fullPage very simple demo."/>
-    <meta name="keywords" content="fullpage,jquery,demo,simple"/>
-    <meta name="Resource-type" content="Document"/>
-
-
+    
     <script src="chartjs.js"></script>
     <script src="utils.js"></script>
 
@@ -458,8 +453,13 @@
                 阅读提示
                 <br></p>
             <p class="content">
-                <span class="high" alt="Bahir Eldeen Brigade">红色背景</span>表示可以点击，左图会显示出对应的恐怖组织网络。
-                <br><span class="imp">红色下划线标注的文字是文章的重点。</span>
+                1. <span class="high" alt="Bahir Eldeen Brigade">红色背景</span>表示可以点击，左图会显示出对应的恐怖组织网络。
+                <br>
+                2. <span class="imp">红色下划线标注的文字是文章的重点。</span>
+                <br>
+                3. 鼠标悬停在左图节点上，可以查看节点所代表的恐怖组织的名称。
+                <br>
+                4. 点击左图中的节点，可以在左上角的地图上查看该恐怖组织所攻击过的地点。
             </p>
 
 
@@ -684,14 +684,14 @@
                                     display: true,
                                     scaleLabel: {
                                         display: true,
-                                        labelString: 'Month'
+                                        labelString: '年份'
                                     }
                                 }],
                                 yAxes: [{
                                     display: true,
                                     scaleLabel: {
                                         display: true,
-                                        labelString: 'Value'
+                                        //labelString: 'Value'
                                     }
                                 }]
                             }
@@ -748,20 +748,22 @@
                                     display: true,
                                     scaleLabel: {
                                         display: true,
-                                        labelString: 'Month'
+                                        labelString: '年份'
                                     }
                                 }],
                                 yAxes: [{
                                     display: true,
                                     scaleLabel: {
                                         display: true,
-                                        labelString: 'Value'
+                                        //labelString: '死亡人数'
                                     }
                                 }]
                             }
                         }
                     };
                 </script>
+                由上面两幅折线图可以看出，恐怖组织合作发动的恐怖袭击，其成功率和造成的死亡人数，都远高于单一恐怖组织发动的恐怖袭击。这意味着，恐怖组织为了宣扬其极端思想，很可能在未来越来越多地联合发动袭击，造成更大的不稳定。
+                <br><br>
                 为了挖掘恐怖组织的合作结构与合作模式，本文利用Global Terrorism Database
                 (GTD)收集的全球恐怖袭击事件数据库，从中选取由两个及以上恐怖组织共同发动的恐怖袭击事件共1739起，作为基本的研究材料，并据此生成社会网络图(Social Network
                 Graph)。图中的每一个圆点(称之为「节点」)代表一个恐怖组织；恐怖组织之间有合作，则两个点之间产生一条连线，连线越粗，说明两个恐怖组织的合作次数越多，其关系越紧密。
