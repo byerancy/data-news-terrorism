@@ -7,11 +7,12 @@
 
     <script src="chartjs.js"></script>
     <script src="utils.js"></script>
-
     <script src="jquery.js"></script>
     <script src="http://d3js.org/topojson.v0.min.js"></script>
     <script src="d3.min.js"></script>
     <script type="text/javascript">
+
+
         $(document).ready(function () {
             $(".high").click(function () {
                 var org_name = $(this).attr('alt');
@@ -22,8 +23,9 @@
                 svg_1.selectAll('circle,line').remove();
                 redraw('2016');
             });
-            $(".dynamic").click()
-
+            $(".fk").click(function () {
+                alert('提示：通过双击下图中的节点，可以删除该节点代表的恐怖组织。尝试对不同节点进行删除，观察恐怖网络是如何瓦解的。单击右侧的「重绘网络」可以将网络恢复至初始状态。')
+            });
         });
 
         window.onload = function () {
@@ -59,6 +61,7 @@
             padding: 4px 6px 4px 6px;
             background-color: #fd6585;
             color: white;
+            cursor: pointer;
         }
 
         .imp {
@@ -71,6 +74,13 @@
             line-height: 28px;
             margin: 0;
             text-align: justify;
+        }
+        
+        .rd{
+            cursor: pointer;
+        }
+        .fk{
+            cursor: pointer;
         }
     </style>
 
@@ -85,22 +95,21 @@
             <div class="rd"
                  style="position:absolute;right: 32%;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
                 <p style="padding: 5px 0px 0px;line-height: 0;color:white;text-align: center">重绘网络</p></div>
-            <div class="dynamic"
-                 style="position:absolute;right: 42%;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
-                <p style="padding: 5px 0px 0px;line-height: 0;color:white;text-align: center">动态网络</p></div>
-            <div class=""
-                 style="position:absolute;right: 51%;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
+            <div class="fk"
+                 style="position:absolute;right: 41%;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;font-family: 'Microsoft YaHei';float: right;margin-right: 20px;background-color: #fd6585;width: 100px;height: 40px">
                 <p style="padding: 5px 0px 0px;line-height: 0;color:white;text-align: center">模拟反恐</p></div>
             <svg id="map"></svg>
             <script>
 
                 function mapData(orgName) {
-                    d3.json('attackLocations.json',function (err,map) {
-                        var mapdata=map.locations;
+                    d3.json('attackLocations.json', function (err, map) {
+                        var mapdata = map.locations;
                         //console.log(mapdata);
-                        var data= mapdata.filter(function (t) {return t.name===orgName;});
+                        var data = mapdata.filter(function (t) {
+                            return t.name === orgName;
+                        });
                         //console.log(data[0].locations);
-                        var mapNode=svg3.selectAll("circle")
+                        var mapNode = svg3.selectAll("circle")
                             .data(data[0].locations)
                             .enter()
                             .append("circle");
@@ -108,10 +117,10 @@
                             .attr("class", "map")
                             .attr("cx", function (d) {
                                 //console.log(d);
-                                return projection([d[1],d[0]])[0];
+                                return projection([d[1], d[0]])[0];
                             })
                             .attr("cy", function (d) {
-                                return projection([d[1],d[0]])[1];
+                                return projection([d[1], d[0]])[1];
                             })
                             .attr("r", "2.5px")
                             .attr("fill", '#fd6585')
@@ -157,7 +166,6 @@
                 }
 
 
-
                 //console.log(projection([120,21]));
 
 
@@ -187,6 +195,7 @@
 
                 var linkedByIndex = {};
 
+
                 function redraw(year) {
 
                     d3.json("nodeslinks.json", function (error, graph) {
@@ -194,20 +203,22 @@
 
                         var links = graph.links;
                         links.forEach(function (d) {
-                            if(d[year]>0){
+                            if (d[year] > 0) {
                                 linkedByIndex[d.source + "," + d.target] = 1;
                             }
                         });
                         //console.log(linkedByIndex);
                         svg_1.append("rect")
+                            .attr('id', 'zoom_rect')
                             .attr("width", width)
                             .attr("height", height)
                             .style("fill", "none")
                             .style("pointer-events", "all")
                             .call(d3.zoom()
                                 .scaleExtent([1 / 2, 4])
-                                .on("zoom", zoomed));
-
+                                .on("zoom", zoomed))
+                            .on("dblclick.zoom", null);
+                        //d3.select('rect#zoom_rect').on("dblclick.zoom", null);
                         var g = svg_1.append("g");
 
                         var link = g
@@ -218,7 +229,9 @@
                         var node = g
                             .attr("class", "nodes")
                             .selectAll("circle")
-                            .data(graph.nodes,function(d) { return d; })
+                            .data(graph.nodes, function (d) {
+                                return d;
+                            })
                             .enter().append("circle");
 
 
@@ -242,15 +255,16 @@
                                 })
                                 .style('stroke-opacity', 0.8);
 
+
                             node
                                 .attr("r", function (d) {
                                     return 5;
-                                    var now=d[year];
-                                    if(now>10){
+                                    var now = d[year];
+                                    if (now > 10) {
                                         return 10;
                                     }
-                                    else{
-                                        if(now<5){
+                                    else {
+                                        if (now < 5) {
                                             return 5;
                                         }
                                         return now;
@@ -260,24 +274,57 @@
                                 .attr("fill", function (d) {
                                     return color(d.group);
                                 })
-                                .attr('stroke-opacity',0)
-                                .attr('fill-opacity',0.9)
+                                .attr('stroke-opacity', 0)
+                                .attr('fill-opacity', 0.9)
                                 .on("mouseover", fade(.1))
                                 .on("mouseout", fade(1))
                                 //.on("click", function (d) {
                                 //    alert(d.id + d.group);
                                 //})
 
-                                .on("click", function (d, i) {
-                                    doubleclick(d, i);
-                                })
-                                .on("click",function (d) {
-                                    mapRestart(d.name)
-                                })
+                                /*
+                                                                .on("click", function (d, i) {
+                                                                    doubleclick(d, i);
+                                                                })
+
+
+                                                                .on("click",function (d) {
+                                                                    mapRestart(d.name)
+                                                                })
+
+
+
+
+                                                                .on("single_double_click",function (d,i) {
+                                                                    mapRestart(d.name);
+                                                                },function (d,i) {
+                                                                    doubleclick(d, i);
+                                                                })
+                                                                */
                                 .call(d3.drag()
                                     .on("start", dragstarted)
                                     .on("drag", dragged)
                                     .on("end", dragended));
+
+                            node.on('click', function (d,i) {
+                                if (d._clickid) {
+                                    clearTimeout(d._clickid);
+                                    d._clickid = null;
+                                    // process double click
+                                    // ...
+                                    doubleclick(d, i);
+                                    svg_1.selectAll('circle').style('fill-opacity',1);
+                                    svg_1.selectAll('line').style('opacity',1);
+                                } else {
+                                    d._clickid = setTimeout(function () {
+                                        // process simple click
+                                        // ...
+                                        mapRestart(d.name);
+                                        d._clickid = null;
+                                    }.bind(this), 350);
+                                }
+                            });
+
 
                             node.append("title")
                                 .text(function (d) {
@@ -367,8 +414,6 @@
                 redraw('2016');
 
 
-
-
                 function neighboring(a, b) {
                     return a + ',' + b in linkedByIndex || b + ',' + a in linkedByIndex;
                 }
@@ -380,7 +425,7 @@
                                 //console.log(neighboring(d, o));
                                 //console.log(d.index+','+o.index);
                                 return neighboring(d.name, o.name) ? 1 : opacity;
-                            })
+                            });
                         //.style("stroke-opacity", function (o) {
                         //console.log(neighboring(d, o));
                         //console.log(d.index+','+o.index);
@@ -454,13 +499,17 @@
                 阅读提示
                 <br></p>
             <p class="content">
-                1. <span class="high" alt="Bahir Eldeen Brigade">红色背景</span>表示可以点击，左图会显示出对应的恐怖组织网络。
+                1. <span class="high" alt="Bahir Eldeen Brigade">红色背景</span>表示可以点击，左图会放大显示出对应的恐怖组织网络与其活动地点，同时将会显示与该组织合作过的其他恐怖组织。
                 <br>
                 2. <span class="imp">红色下划线标注的文字是文章的重点。</span>
                 <br>
                 3. 鼠标悬停在左图节点上，可以查看节点所代表的恐怖组织的名称。
                 <br>
-                4. 点击左图中的节点，可以在左上角的地图上查看该恐怖组织所攻击过的地点。
+                4. 单击左图中的节点，可以在左上角的地图上查看该恐怖组织所攻击过的地点。双击节点，则可以删除该恐怖组织。
+                <br>
+                5. 左图可拖动、放大。
+                <br>
+                6. 在本区域内滚动鼠标，以阅读正文。
             </p>
 
 
@@ -644,15 +693,15 @@
                     var config3 = {
                         type: 'line',
                         data: {
-                            labels: [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],
+                            labels: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                             datasets: [{
                                 label: "独立发动恐袭平均成功率",
                                 backgroundColor: window.chartColors.red,
                                 borderColor: window.chartColors.red,
                                 data: [
-                                    90.10357,88.42842,90.69767,89.48696,92.36984,94.52965,
-                                    96.37736,96.28229,91.55803,93.83033,90.80243,90.6778,
-                                    88.97371,86.73938,88.11653,84.21549,79.98691
+                                    90.10357, 88.42842, 90.69767, 89.48696, 92.36984, 94.52965,
+                                    96.37736, 96.28229, 91.55803, 93.83033, 90.80243, 90.6778,
+                                    88.97371, 86.73938, 88.11653, 84.21549, 79.98691
                                 ],
                                 fill: false,
                             }, {
@@ -661,16 +710,16 @@
                                 backgroundColor: window.chartColors.blue,
                                 borderColor: window.chartColors.blue,
                                 data: [
-                                    94.44444,100,100,100,100,100,100,100,91.66667,96.9697,
-                                    97.72727,91.66667,87.80488,91.48936,94.3299,95.05703,90.20833
+                                    94.44444, 100, 100, 100, 100, 100, 100, 100, 91.66667, 96.9697,
+                                    97.72727, 91.66667, 87.80488, 91.48936, 94.3299, 95.05703, 90.20833
                                 ],
                             }]
                         },
                         options: {
                             responsive: true,
-                            title:{
-                                display:true,
-                                text:'恐怖袭击平均成功率对比'
+                            title: {
+                                display: true,
+                                text: '恐怖袭击平均成功率对比'
                             },
                             tooltips: {
                                 mode: 'index',
@@ -706,15 +755,15 @@
                     var config4 = {
                         type: 'line',
                         data: {
-                            labels: [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],
+                            labels: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                             datasets: [{
                                 label: "独立发动恐袭平均死亡人数",
                                 backgroundColor: window.chartColors.red,
                                 borderColor: window.chartColors.red,
                                 data: [
-                                    2.490794,4.120022,3.329457,2.505467,4.949731,3.119121,
-                                    3.520377,4.022999,1.870271,1.950728,1.555835,1.620751,
-                                    1.855083,1.883407,2.673205,2.659295,2.674654
+                                    2.490794, 4.120022, 3.329457, 2.505467, 4.949731, 3.119121,
+                                    3.520377, 4.022999, 1.870271, 1.950728, 1.555835, 1.620751,
+                                    1.855083, 1.883407, 2.673205, 2.659295, 2.674654
                                 ],
                                 fill: false,
                             }, {
@@ -723,18 +772,18 @@
                                 backgroundColor: window.chartColors.blue,
                                 borderColor: window.chartColors.blue,
                                 data: [
-                                    4.055556,3.142857,16.8,5.641509,
-                                    6.181818,6.057143,2.2,3.869565,
-                                    6.4,5,6.840909,6.166667,3.073171,
-                                    5.053191,8.891753,6.794677,4.110417
+                                    4.055556, 3.142857, 16.8, 5.641509,
+                                    6.181818, 6.057143, 2.2, 3.869565,
+                                    6.4, 5, 6.840909, 6.166667, 3.073171,
+                                    5.053191, 8.891753, 6.794677, 4.110417
                                 ],
                             }]
                         },
                         options: {
                             responsive: true,
-                            title:{
-                                display:true,
-                                text:'恐怖袭击平均死亡人数对比'
+                            title: {
+                                display: true,
+                                text: '恐怖袭击平均死亡人数对比'
                             },
                             tooltips: {
                                 mode: 'index',
@@ -766,7 +815,7 @@
                 由上面两幅折线图可以看出，恐怖组织合作发动的恐怖袭击，其成功率和造成的死亡人数，都远高于单一恐怖组织发动的恐怖袭击。这意味着，恐怖组织为了宣扬其极端思想，很可能在未来越来越多地联合发动袭击，造成更大的不稳定。
                 <br><br>
                 为了挖掘恐怖组织的合作结构与合作模式，本文利用Global Terrorism Database
-                (GTD)收集的全球恐怖袭击事件数据库，从中选取由两个及以上恐怖组织共同发动的恐怖袭击事件共1739起，作为基本的研究材料，并据此生成社会网络图(Social Network
+                (GTD)收集的全球恐怖袭击事件数据库，从中选取由两个及以上恐怖组织共同发动的恐怖袭击事件共1739起(时间范围为1970-2016年)，作为基本的研究材料，并据此生成社会网络图(Social Network
                 Graph)。图中的每一个圆点(称之为「节点」)代表一个恐怖组织；恐怖组织之间有合作，则两个点之间产生一条连线，连线越粗，说明两个恐怖组织的合作次数越多，其关系越紧密。
                 <br><br>
                 显而易见，从这幅网络图中，我们可以发现一些「群体」：一些节点之间的连接更为紧密，这些节点的集合就是一个群体（community）。这就说明，恐怖组织在相互合作的过程中，形成了合作群体。为了找出这些可能的群体，本文利用Fast-Greedy算法将这张网络图进行切割，找出来了148个群体。但是这些群体中，绝大部分都仅包含了个位数的恐怖组织，说明这些恐怖组织虽有合作，但合作次数极少，并不具有代表性。因此，将群体中恐怖组织个数少于5个的删除，最后剩下15个较大的恐怖组织合作群体。如本网页左侧所示，每种颜色代表了一个恐怖组织群体，同种颜色标注的恐怖组织之间的关系更密切。
@@ -785,14 +834,18 @@
                 <br><br>
 
             </p>
-            <p class="content" style="text-align: center">鸣谢</p>
+            <p class="content" style="font-size: 18px;text-align: center">数据来源</p>
+            <p class="content">
+               <a href="https://www.start.umd.edu/gtd/">全球恐怖主义数据库 (Global Terrorism Database)</a>
+            </p>
+            <p class="content" style="font-size: 18px;text-align: center">鸣谢</p>
             <p class="content">
 
                 本网站的布局与颜色样式借鉴了财新·数字说栏目作品<a href="http://datanews.caixin.com/mobile/yimin/" target="_blank">《移民去远方》</a>，在此表示感谢。
             </p>
 
 
-            <p class="content" style="text-align: center">作者</p>
+            <p class="content" style="font-size: 18px;text-align: center">作者</p>
 
 
             <p class="content">
