@@ -8,7 +8,6 @@
     <script src="chartjs.js"></script>
     <script src="utils.js"></script>
     <script src="jquery.js"></script>
-    <script src="http://d3js.org/topojson.v0.min.js"></script>
     <script src="d3.min.js"></script>
     <script type="text/javascript">
 
@@ -164,7 +163,7 @@
                         .remove();
 
                     mapData(orgName);
-                    d3.select('p#orgName').text(orgName);
+                    d3.select('a#wiki').text(orgName).attr('href','https://en.wikipedia.org/w/index.php?search='+orgName).style('text-decoration','none').style('color','#666666');
                 }
 
 
@@ -172,15 +171,16 @@
 
 
             </script>
-            <div style="position: absolute;left:10px;top: 150px;width: 200px;color:#666666"><p id="orgName" style="text-align: center;font-family: 'Microsoft YaHei';font-size: 14px"></p></div>
+            <div style="position: absolute;left:10px;top: 150px;width: 200px;color:#666666"><p id="orgName" style="text-align: center;font-family: 'Microsoft YaHei';font-size: 14px"><a target="_blank" id="wiki"></a></p></div>
 
 
-            <svg id="count"></svg>
+
             <script>
+                /*
                 var svg4 = d3.select("svg#count").style('position', 'absolute');
                 svg4.attr('width', 200)
                     .attr('height', '100%');
-
+*/
 
             </script>
             <svg id="ss"></svg>
@@ -316,6 +316,7 @@
                                     d._clickid = null;
                                     // process double click
                                     // ...
+                                    mapRestart(d.name);
                                     doubleclick(d, i);
                                     svg_1.selectAll('circle').style('fill-opacity',1);
                                     svg_1.selectAll('line').style('opacity',1);
@@ -507,13 +508,11 @@
                 <br>
                 2. <span class="imp">红色下划线标注的文字是文章的重点。</span>
                 <br>
-                3. 鼠标悬停在左图节点上，可以查看节点所代表的恐怖组织的名称。
+                3. 单击左图中的节点，可以在左上角的地图上查看该恐怖组织所攻击过的地点。双击节点，则可以删除该恐怖组织。
                 <br>
-                4. 单击左图中的节点，可以在左上角的地图上查看该恐怖组织所攻击过的地点。双击节点，则可以删除该恐怖组织。
+                4. 左图可拖动、放大。
                 <br>
-                5. 左图可拖动、放大。
-                <br>
-                6. 在本区域内滚动鼠标，以阅读正文。
+                5. 在本区域内滚动鼠标，以阅读正文。
             </p>
 
 
@@ -689,7 +688,7 @@
 
 
                 </script>
-                在1998年之前，平均每100起恐怖袭击中，只有不到1起是由恐怖组织联合发动的；1998年之后，恐怖组织则开始选择合作，每100起恐怖袭击中，最多有超过4起是由多个恐怖组织联合发动的。这说明恐怖活动进入了新形态，恐怖组织的合作将提高其袭击范围与强度，同时也加大了将其歼灭的难度。
+                在1998年之前，平均每100起恐怖袭击中，只有不到1起是由恐怖组织联合发动的；1998年之后，恐怖组织则开始选择合作，每100起恐怖袭击中，最多有超过4起是由多个恐怖组织联合发动的。<span class="imp">这说明恐怖活动进入了新形态，恐怖组织的合作将提高其袭击范围与强度，同时也加大了将其歼灭的难度。</span>
                 <br><br>
                 <canvas id="chart3" width="400" height="400"></canvas>
                 <script>
@@ -816,36 +815,41 @@
                         }
                     };
                 </script>
-                由上面两幅折线图可以看出，恐怖组织合作发动的恐怖袭击，其成功率和造成的死亡人数，都远高于单一恐怖组织发动的恐怖袭击。这意味着，恐怖组织为了宣扬其极端思想，很可能在未来越来越多地联合发动袭击，造成更大的不稳定。
+                由上面两幅折线图可以看出，<span class="imp">恐怖组织合作发动的恐怖袭击，其成功率和造成的死亡人数，都远高于单一恐怖组织发动的恐怖袭击。</span>这意味着，恐怖组织为了宣扬其极端思想，很可能在未来越来越多地联合发动袭击，造成更大的不稳定。
                 <br><br>
                 为了挖掘恐怖组织的合作结构与合作模式，本文利用Global Terrorism Database
                 (GTD)收集的全球恐怖袭击事件数据库，从中选取由两个及以上恐怖组织共同发动的恐怖袭击事件共1739起(时间范围为1970-2016年)，作为基本的研究材料，并据此生成社会网络图(Social Network
-                Graph)。图中的每一个圆点(称之为「节点」)代表一个恐怖组织；恐怖组织之间有合作，则两个点之间产生一条连线，连线越粗，说明两个恐怖组织的合作次数越多，其关系越紧密。
+                Graph)。<span class="imp">图中的每一个圆点(称之为「节点」)代表一个恐怖组织，节点越大，说明该恐怖组织发动的恐怖袭击越多；恐怖组织之间有合作，则两个点之间产生一条连线，连线越粗，说明两个恐怖组织的合作次数越多，其关系越紧密。</span>
                 <br><br>
-                显而易见，从这幅网络图中，我们可以发现一些「群体」：一些节点之间的连接更为紧密，这些节点的集合就是一个群体（community）。这就说明，恐怖组织在相互合作的过程中，形成了合作群体。为了找出这些可能的群体，本文利用Fast-Greedy算法将这张网络图进行切割，找出来了148个群体。但是这些群体中，绝大部分都仅包含了个位数的恐怖组织，说明这些恐怖组织虽有合作，但合作次数极少，并不具有代表性。因此，将群体中恐怖组织个数少于5个的删除，最后剩下15个较大的恐怖组织合作群体。如本网页左侧所示，每种颜色代表了一个恐怖组织群体，同种颜色标注的恐怖组织之间的关系更密切。
+                显而易见，从这幅网络图中，我们可以发现一些「群体」：<span class="imp">一些节点之间的连接更为紧密，这些节点的集合就是一个群体（community）。</span>这就说明，恐怖组织在相互合作的过程中，形成了合作群体。为了找出这些可能的群体，本文利用Fast-Greedy算法将这张网络图进行切割，找出来了148个群体。但是这些群体中，绝大部分都仅包含了个位数的恐怖组织，说明这些恐怖组织虽有合作，但合作次数极少，并不具有代表性。因此，将群体中恐怖组织个数少于5个的删除，最后剩下15个较大的恐怖组织合作群体。如本网页左侧所示，每种颜色代表了一个恐怖组织群体，同种颜色标注的恐怖组织之间的关系更密切。
                 <br><br>
                 在左侧的图中，需要重点关注两种类型的节点：<span class="imp">一，一个群体中连接较多的节点；二，连接两个群体的节点。</span>
                 <br><br>
-                前者意味着，该节点经常伙同其他恐怖组织发动恐怖袭击，极具煽动力与组织力，可以说是群体首领一般的存在。例如，活跃在阿富汗的<span class="high"
+                前者意味着，<span class="imp">该节点经常伙同其他恐怖组织发动恐怖袭击，极具煽动力与组织力，可以说是群体首领一般的存在。</span>例如，活跃在阿富汗的<span class="high"
                                                                                   alt="Taliban">塔利班组织</span>，与活跃在巴基斯坦与阿富汗边境地带的「巴基斯坦塔利班」（<span
                     class="high" alt="Tehrik-i-Taliban Pakistan (TTP)">Tehrik-i-Taliban Pakistan</span>）联系密切，而后者们又各自连接了许多其他恐怖组织。印度东北部的分裂势力<span
                     class="high" alt="United Liberation Front of Assam (ULFA)">United Liberation Front of Assam</span>，连接着多个活跃在印度的恐怖组织。如果反恐力量能够将这种恐怖组织攻破，那么以其为首的整个恐怖群体将会溃散，恐怖群体的内部凝聚力也就大大减弱，为反恐力量的逐个攻破带来希望。
                 <br><br>
-                而后者作为两个或多个群体的连接节点，则起到了「桥梁」的作用。如<span class="high" alt="Al-Qaida">基地组织</span>，不仅与其自身的群体联系密切，还连通了四个其他不同的恐怖群体。由于这类恐怖组织与多个群体都有联系，它们不仅可以交换情报，相互串通，从而规避反恐力量的打击，甚至恐怖群体还可以通过这些连接点恐怖组织相互勾结，形成更大的恐怖群体。因此，这类恐怖组织也应当成为打击的重点，从而将恐怖群体与恐怖群体割裂开来，避免它们串通情报。
+                <span class="imp">而后者作为两个或多个群体的连接节点，则起到了「桥梁」的作用。</span>如<span class="high" alt="Al-Qaida">基地组织</span>，不仅与其自身的群体联系密切，还连通了四个其他不同的恐怖群体。由于这类恐怖组织与多个群体都有联系，它们不仅可以交换情报，相互串通，从而规避反恐力量的打击，甚至恐怖群体还可以通过这些连接点恐怖组织相互勾结，形成更大的恐怖群体。因此，这类恐怖组织也应当成为打击的重点，从而将恐怖群体与恐怖群体割裂开来，避免它们串通情报。
                 <br><br>
-                除此之外，还有一种节点，同时具备了两种性质，既是群体内的首领之一，又是不同群体间的连接点。例如，近年来制造了多起血腥暴力事件的<span class="high"
-                                                                                     alt="Islamic State of Iraq and the Levant (ISIL)">伊斯兰国</span>，不仅在群体内与其他恐怖组织连接紧密，多次共同发动恐怖袭击，还连通了其他四个恐怖群体。这说明，伊斯兰国对群体内的其他恐怖组织具有极强的号召力，同时在外还具备多种情报源，而这也是其近年来生存、扩张并难以被铲除的重要原因。伊斯兰国通过与亚欧地区的恐怖组织合作，将其恐怖袭击的范围由中东拓展到了北非、欧洲和东南亚。例如，在中东和欧洲制造恐怖袭击的<span class="high" alt="Kurdistan Workers' Party (PKK)">库尔德斯坦工人党</span>就是伊斯兰国的同伙组织。
+                除此之外，还有一种节点，<span class="imp">同时具备了两种性质，既是群体内的首领之一，又是不同群体间的连接点。</span>例如，近年来制造了多起血腥暴力事件的<span class="high"
+                                                                                     alt="Islamic State of Iraq and the Levant (ISIL)">伊斯兰国</span>，不仅在群体内与其他恐怖组织连接紧密，多次共同发动恐怖袭击，还连通了其他四个恐怖群体。这说明，伊斯兰国对群体内的其他恐怖组织具有极强的号召力，同时在外还具备多种情报源，而这也是其近年来生存、扩张并难以被铲除的重要原因。伊斯兰国通过与亚欧地区的恐怖组织合作，将其恐怖袭击的范围由中东拓展到了北非、欧洲和东南亚。这也与伊斯兰国一直试图在海外「建省」的目的相吻合。例如，在中东和欧洲制造恐怖袭击的<span class="high" alt="Kurdistan Workers' Party (PKK)">库尔德斯坦工人党</span>就是伊斯兰国的同伙组织。
                 <br><br>
-
+                从左图中，还可以发现两个相对独立的恐怖组织团体。以<span class="high" alt="Earth Liberation Front (ELF)">地球解放阵线</span>和<span class="high" alt="Animal Liberation Front (ALF)">动物解放阵线</span>为代表的极端动物、环境主义团体主要在美国和欧洲合作，但其激进的方式造成了人员伤亡和公共秩序失控。虽然这两个组织以「环境保护」和「动物保护」为幌子，但是它们与其他恐怖组织（如活跃在欧洲和澳洲的分裂势力<span class="high" alt="Informal Anarchist Federation">Informal Anarchist Federation</span>）联系密切，因此其真正目的难以定论，需要密切关注。
+                <br><br>
+                另一个独立的团体主要在南美洲的哥伦比亚活动，其中心组织为两个反政府武装力量——<span class="high" alt="National Liberation Army of Colombia (ELN)">哥伦比亚民族解放军</span>和<span class="high" alt="Revolutionary Armed Forces of Colombia (FARC)">哥伦比亚武装革命力量</span>。这些组织的目的在于夺取本国内的政权，而不是向外扩张，因此其恐怖活动的地域性非常显著。
             </p>
+
+            <p class="content" style="font-size: 18px;text-align: center">结语</p>
+            <p class="content">由于恐怖组织的目的和资源不同，其活动方式迥异。本篇数据新闻利用了社会网络分析法对恐怖组织的网络进行了构建、叙述，并发现了一些非常特殊的恐怖组织。然而，虽然联合发动的恐怖袭击在绝对数量上越来越多，但是其相对占比较低，成为一股地下发展的暗流。但是，暗流往往突然汹涌，在恐怖组织相互勾结形成更大的恐怖团伙之前，我们需要思考，如何将这股暗流截断。</p>
             <p class="content" style="font-size: 18px;text-align: center">数据来源</p>
             <p class="content">
-               <a href="https://www.start.umd.edu/gtd/" target="_blank">全球恐怖主义数据库 (Global Terrorism Database)</a>
+               <a style="text-decoration: none;color:#fd6585" href="https://www.start.umd.edu/gtd/" target="_blank">全球恐怖主义数据库 (Global Terrorism Database)</a>
             </p>
             <p class="content" style="font-size: 18px;text-align: center">鸣谢</p>
             <p class="content">
 
-                本网站的布局与颜色样式借鉴了财新·数字说栏目作品<a href="http://datanews.caixin.com/mobile/yimin/" target="_blank">《移民去远方》</a>，在此表示感谢。
+                本网站的布局与颜色样式借鉴了财新·数字说栏目作品<a style="text-decoration: none;color:#fd6585" href="http://datanews.caixin.com/mobile/yimin/" target="_blank">《移民去远方》</a>，在此表示感谢。
             </p>
 
 
