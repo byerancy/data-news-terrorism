@@ -16,6 +16,7 @@
             $(".high").click(function () {
                 var org_name = $(this).attr('alt');
                 highlight(org_name);
+                mapRestart(org_name);
             });
             $(".rd").click(function () {
                 svg_1.selectAll('circle,line').remove();

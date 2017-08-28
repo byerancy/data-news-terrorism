@@ -19,8 +19,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="775" column="94" lean-forward="false" selection-start-line="775" selection-start-column="94" selection-end-line="775" selection-end-column="94" />
+            <state relative-caret-position="270">
+              <caret line="18" column="37" lean-forward="false" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -111,8 +111,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>d.id</find>
-      <find>.id</find>
       <find>white</find>
       <find>stroke</find>
       <find>collide</find>
@@ -141,6 +139,8 @@
       <find>Al</find>
       <find>Al-Q</find>
       <find>为了挖掘恐怖组织的合作结构与合作模式</find>
+      <find>click</find>
+      <find>mapRestart</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -258,12 +258,12 @@
       <updated>1502777973154</updated>
       <workItem from="1502777974835" duration="2195000" />
       <workItem from="1502782314346" duration="76768000" />
-      <workItem from="1503860809953" duration="6316000" />
+      <workItem from="1503860809953" duration="6471000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="85279000" />
+    <option name="totallyTimeSpent" value="85434000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -555,8 +555,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="775" column="94" lean-forward="false" selection-start-line="775" selection-start-column="94" selection-end-line="775" selection-end-column="94" />
+        <state relative-caret-position="270">
+          <caret line="18" column="37" lean-forward="false" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
           <folding />
         </state>
       </provider>
