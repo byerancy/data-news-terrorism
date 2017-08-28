@@ -1,0 +1,98 @@
+{
+  "nodes":
+    {
+      "2004": [
+        {
+          "name": "A",
+          "value": 4,
+          "group":1
+        },
+        {
+          "name": "B",
+          "value": 3,
+          "group":2
+        },
+        {
+          "name": "C",
+          "value": 13,
+          "group":1
+        },
+        {
+          "name": "D",
+          "value": 0,
+          "group":1
+        }
+      ],
+      "2005": [
+        {
+          "name": "A",
+          "value": 6,
+          "group":1
+        },
+        {
+          "name": "B",
+          "value": 10,
+          "group":2
+        },
+        {
+          "name": "C",
+          "value": 20,
+          "group":1
+        },
+        {
+          "name": "D",
+          "value": 20,
+          "group":1
+        },
+        {
+          "name": "E",
+          "value": 15,
+          "group":2
+        }
+      ]
+    }
+  ,
+  "links":
+    {
+      "2004":[
+        {
+          "source":"A",
+          "target":"B",
+          "value":0
+        },
+        {
+          "source":"A",
+          "target":"C",
+          "value":5
+        },
+        {
+          "source":"B",
+          "target":"C",
+          "value":5
+        }
+      ],
+      "2005":[
+        {
+          "source":"A",
+          "target":"B",
+          "value":20
+        },
+        {
+          "source":"A",
+          "target":"C",
+          "value":15
+        },
+        {
+          "source":"B",
+          "target":"C",
+          "value":13
+        },
+        {
+          "source":"B",
+          "target":"D",
+          "value":13
+        }
+      ]
+    }
+
+}
